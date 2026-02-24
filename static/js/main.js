@@ -97,7 +97,9 @@ function setupThreeJS() {
     scene.background = new THREE.Color(0x030508);
 
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.position.set(0, 10, 30);
+    // Start camera looking more upwards so the user sees the sky
+    camera.position.set(0, 10, 150);
+    camera.lookAt(0, 50, 0);
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -108,6 +110,8 @@ function setupThreeJS() {
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.maxDistance = 2000;
+    // Removed restriction to let users pan below the ground
+    // controls.maxPolarAngle = Math.PI / 2 + 0.1;
     controls.zoomSpeed = 2.0;
 
     // Lighting
@@ -176,16 +180,22 @@ function addCardinalLabels() {
 }
 
 function azAltToXYZ(azDeg, altDeg, radius) {
+    // Convert degrees to radians
     const az = THREE.MathUtils.degToRad(azDeg);
     const alt = THREE.MathUtils.degToRad(altDeg);
 
-    // Standard astronomy: N=0, E=90, S=180, W=270
-    // If Y is UP (alt):
-    // Az 0 (North) -> -Z axis
-    // Az 90 (East) -> +X axis
+    // X = West/East, Y = Up/Down, Z = North/South
+    // By convention in our scene, North is -Z, East is +X
+    // Azimuth 0 = North, 90 = East, 180 = South, 270 = West
+
+    // x = r * cos(alt) * sin(az)
+    // y = r * sin(alt)
+    // z = -r * cos(alt) * cos(az)
+
     const x = radius * Math.cos(alt) * Math.sin(az);
     const y = radius * Math.sin(alt);
     const z = -radius * Math.cos(alt) * Math.cos(az);
+
     return new THREE.Vector3(x, y, z);
 }
 
@@ -317,16 +327,19 @@ function focusOnPlanet() {
     updateUI(sel);
 
     if (sel === "All") {
-        // Reset Camera
-        gsapCameraTo(new THREE.Vector3(0, 30, 80), new THREE.Vector3(0, 0, 0));
+        // Reset Camera to look up at the entire sky dome
+        gsapCameraTo(new THREE.Vector3(0, 10, 150), new THREE.Vector3(0, 50, 0));
         return;
     }
 
     if (planetMeshes[sel]) {
         const pos = planetMeshes[sel].mesh.position;
         // Move camera slightly away from planet
-        const offset = pos.clone().normalize().multiplyScalar(RADIUS - 30);
-        offset.y += 5; // Look slightly down
+        const offset = pos.clone().normalize().multiplyScalar(Math.max(30, pos.length() - 80));
+
+        // If planet is above horizon, look slightly down on it.
+        // If planet is below horizon, look slightly up at it.
+        offset.y += (pos.y > 0 ? 15 : -15);
 
         gsapCameraTo(offset, pos);
     }
