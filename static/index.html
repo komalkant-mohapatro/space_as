@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Astronomy Visualization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <!-- Three.js + OrbitControls -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+    </script>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <div id="ui-overlay">
+        <header class="glass-panel header-panel">
+            <h1>Astronomy Visualization</h1>
+            <div id="time-display">
+                <span id="utc-time">UTC: --:--:--</span> | 
+                <span id="ist-time">IST: --:--:--</span>
+            </div>
+            <div id="location-display">
+                Detecting location...
+            </div>
+        </header>
+
+        <aside class="glass-panel controls-panel">
+            <h2>Select Target</h2>
+            <select id="planet-selector">
+                <option value="All">View All (Solar System overview)</option>
+                <option value="Sun">Sun</option>
+                <option value="Moon">Moon</option>
+                <option value="Mercury">Mercury</option>
+                <option value="Venus">Venus</option>
+                <option value="Mars">Mars</option>
+                <option value="Jupiter">Jupiter</option>
+                <option value="Saturn">Saturn</option>
+                <option value="Uranus">Uranus</option>
+                <option value="Neptune">Neptune</option>
+            </select>
+            
+            <div id="planet-data">
+                <h3>Details</h3>
+                <p><strong>Altitude:</strong> <span id="data-alt">--</span>&deg;</p>
+                <p><strong>Azimuth:</strong> <span id="data-az">--</span>&deg;</p>
+                <p><strong>Distance:</strong> <span id="data-dist">--</span> AU</p>
+                <p><strong>Visibility:</strong> <span id="data-vis">--</span></p>
+            </div>
+        </aside>
+        
+        <div class="legend glass-panel">
+            <p><span class="dot visible-dot"></span> Visible (Above Horizon)</p>
+            <p><span class="dot hidden-dot"></span> Not Visible (Below)</p>
+        </div>
+    </div>
+
+    <script type="module" src="/static/js/main.js"></script>
+</body>
+</html>
