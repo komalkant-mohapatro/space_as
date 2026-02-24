@@ -14,8 +14,11 @@ app = FastAPI(title="Astronomy Visualization API")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 
-# Ensure static directory exists
-os.makedirs(STATIC_DIR, exist_ok=True)
+# Ensure static directory exists (Handle read-only filesystem on Vercel)
+try:
+    os.makedirs(STATIC_DIR, exist_ok=True)
+except Exception:
+    pass
 
 # Mount static files (CSS, JS, assets)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
