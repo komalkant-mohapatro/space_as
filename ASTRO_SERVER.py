@@ -3,6 +3,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = FastAPI(title="Astronomy Visualization API")
 
@@ -68,4 +72,6 @@ async def fetch_celestial_data(req: CelestialRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("ASTRO_SERVER:app", host="0.0.0.0", port=8000, reload=True)
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run("ASTRO_SERVER:app", host=host, port=port, reload=True)
