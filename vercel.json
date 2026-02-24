@@ -1,0 +1,14 @@
+{
+    "builds": [
+        {
+            "src": "ASTRO_SERVER.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "ASTRO_SERVER.py"
+        }
+    ]
+}
