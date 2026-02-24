@@ -5,10 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: FastAPI",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "ASTRO_SERVER:app",
+                "--reload"
+            ],
+            "jinja": true,
+            "justMyCode": true
+        },
+        {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
-            "url": "http://localhost:8080",
+            "url": "http://localhost:8000",
             "webRoot": "${workspaceFolder}"
         }
     ]
