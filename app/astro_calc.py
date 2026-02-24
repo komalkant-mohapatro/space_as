@@ -1,22 +1,24 @@
 from skyfield.api import load, wgs84
 from datetime import datetime
 import pytz
+import shutil
 
 import os
 from skyfield.api import Loader
 
-# Setup Skyfield loader: 
-# 1. Use root if de421.bsp is present
-# 2. Fallback to /tmp for downloads on Vercel
-# 3. Fallback to current directory locally
-if os.path.exists('de421.bsp'):
-    load = Loader('.')
-    eph = load('de421.bsp')
-elif os.environ.get('VERCEL'):
-    load = Loader('/tmp')
+# Setup Skyfield loader:
+# On Vercel, we MUST use /tmp for any downloads/writing (like Leap_Second.dat)
+# but we can read our bundled de421.bsp from the root.
+if os.environ.get('VERCEL'):
+    load_path = '/tmp'
+    load = Loader(load_path)
+    # Copy de421.bsp to /tmp so Skyfield can read/write in its "standard" way if needed
+    if os.path.exists('de421.bsp') and not os.path.exists('/tmp/de421.bsp'):
+        shutil.copy('de421.bsp', '/tmp/de421.bsp')
     eph = load('de421.bsp')
 else:
-    load = Loader('.')
+    load_path = '.'
+    load = Loader(load_path)
     eph = load('de421.bsp')
 
 ts = load.timescale()

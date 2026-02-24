@@ -1,14 +1,16 @@
 {
-    "builds": [
+    "rewrites": [
         {
-            "src": "ASTRO_SERVER.py",
-            "use": "@vercel/python"
-        }
-    ],
-    "routes": [
+            "source": "/api/(.*)",
+            "destination": "ASTRO_SERVER.py"
+        },
         {
-            "src": "/(.*)",
-            "dest": "ASTRO_SERVER.py"
+            "source": "/static/(.*)",
+            "destination": "/static/$1"
+        },
+        {
+            "source": "/",
+            "destination": "ASTRO_SERVER.py"
         }
     ]
 }
