@@ -2,8 +2,19 @@ from skyfield.api import load, wgs84
 from datetime import datetime
 import pytz
 
+import os
+from skyfield.api import Loader
+
+# Setup Skyfield loader to use /tmp in Vercel or current directory locally
+load_path = '/tmp' if os.environ.get('VERCEL') else '.'
+load = Loader(load_path)
+
 # Load ephemeris data (Downloads de421.bsp if not present)
-eph = load('de421.bsp')
+# Note: de421.bsp is already in the project root, so we check there first
+if os.path.exists('de421.bsp'):
+    eph = load('de421.bsp')
+else:
+    eph = load('de421.bsp')
 ts = load.timescale()
 
 PLANETS = {
