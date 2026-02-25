@@ -1,16 +1,27 @@
 {
-    "rewrites": [
+    "version": 2,
+    "builds": [
         {
-            "source": "/api/(.*)",
-            "destination": "ASTRO_SERVER.py"
+            "src": "ASTRO_SERVER.py",
+            "use": "@vercel/python"
         },
         {
-            "source": "/static/(.*)",
-            "destination": "/static/$1"
+            "src": "static/**",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/api/(.*)",
+            "dest": "ASTRO_SERVER.py"
         },
         {
-            "source": "/",
-            "destination": "ASTRO_SERVER.py"
+            "src": "/static/(.*)",
+            "dest": "/static/$1"
+        },
+        {
+            "src": "/",
+            "dest": "ASTRO_SERVER.py"
         }
     ]
 }
