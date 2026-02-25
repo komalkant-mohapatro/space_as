@@ -34,14 +34,30 @@ from app.astro_calc import get_celestial_data
 import requests
 from typing import Optional
 
+from fastapi import Request
+
 @app.get("/api/status")
 async def get_status():
     return {"status": "ok", "message": "Astronomy API is running."}
 
 @app.get("/api/location")
-async def get_location():
+async def get_location(request: Request):
     try:
-        response = requests.get("http://ip-api.com/json/")
+        # On Vercel, the real user IP is in the x-forwarded-for header
+        client_ip = request.headers.get("x-forwarded-for", "")
+        if client_ip:
+            # Handle multiple IPs in the header (e.g., "1.2.3.4, 5.6.7.8")
+            client_ip = client_ip.split(",")[0].strip()
+        else:
+            client_ip = request.client.host
+            
+        # If it's a local IP, just use the plain API to get the ISP's location
+        if client_ip in ("127.0.0.1", "::1", "localhost"):
+            url = "http://ip-api.com/json/"
+        else:
+            url = f"http://ip-api.com/json/{client_ip}"
+            
+        response = requests.get(url, timeout=5)
         if response.status_code == 200:
             data = response.json()
             return {

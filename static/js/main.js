@@ -64,10 +64,12 @@ async function fetchLocation() {
                     userLocation.lon = position.coords.longitude;
 
                     try {
-                        // Still hit our backend API just to figure out the City name, ignoring its sloppy coords.
-                        const res = await fetch('/api/location');
+                        // Reverse geocode to get the exact city name for these coordinates
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLocation.lat}&lon=${userLocation.lon}`);
                         const data = await res.json();
-                        userLocation.city = `${data.city}, ${data.country}`;
+                        const city = data.address.city || data.address.town || data.address.village || data.address.county || "Unknown Location";
+                        const country = data.address.country || "";
+                        userLocation.city = country ? `${city}, ${country}` : city;
                     } catch (e) {
                         userLocation.city = "Unknown City";
                     }
