@@ -75,6 +75,17 @@ async def fetch_celestial_data(req: CelestialRequest):
 
 if __name__ == "__main__":
     import uvicorn
+    import webbrowser
+    from threading import Timer
+    
     host = os.getenv("HOST", "0.0.0.0")
     port = int(os.getenv("PORT", 8000))
+
+    def open_browser():
+        print(f"Opening browser at http://localhost:{port}...")
+        webbrowser.open(f"http://localhost:{port}")
+        
+    # Open the browser after 1.5 seconds to ensure the server has time to start
+    Timer(1.5, open_browser).start()
+    
     uvicorn.run("ASTRO_SERVER:app", host=host, port=port, reload=True)

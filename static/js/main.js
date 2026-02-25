@@ -52,17 +52,58 @@ function updateClocks() {
 
 // Fetch Location
 async function fetchLocation() {
+    return new Promise((resolve) => {
+        locationEl.innerText = "Requesting exact location...";
+
+        // Step 1: Try HTML5 Browser Geolocation for exact coordinates
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    // Success! Got exact GPS coords.
+                    userLocation.lat = position.coords.latitude;
+                    userLocation.lon = position.coords.longitude;
+
+                    try {
+                        // Still hit our backend API just to figure out the City name, ignoring its sloppy coords.
+                        const res = await fetch('/api/location');
+                        const data = await res.json();
+                        userLocation.city = `${data.city}, ${data.country}`;
+                    } catch (e) {
+                        userLocation.city = "Unknown City";
+                    }
+
+                    locationEl.innerText = `${userLocation.city} (${userLocation.lat.toFixed(4)}°, ${userLocation.lon.toFixed(4)}°)`;
+                    resolve();
+                },
+                async (error) => {
+                    console.warn("Geolocation denied/failed. Falling back to IP-based location.", error);
+                    // Step 2: Fallback to IP location
+                    await fetchLocationFallback(resolve);
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        } else {
+            console.warn("Geolocation not supported by browser. Falling back to IP-based location.");
+            // Step 2: Fallback to IP location
+            fetchLocationFallback(resolve);
+        }
+    });
+}
+
+// Fallback to IP Location
+async function fetchLocationFallback(resolve) {
     try {
         const res = await fetch('/api/location');
         const data = await res.json();
         userLocation.lat = data.latitude;
         userLocation.lon = data.longitude;
         userLocation.city = `${data.city}, ${data.country}`;
-        locationEl.innerText = `${userLocation.city} (${userLocation.lat.toFixed(2)}°, ${userLocation.lon.toFixed(2)}°)`;
+        locationEl.innerText = `[IP] ${userLocation.city} (${userLocation.lat.toFixed(4)}°, ${userLocation.lon.toFixed(4)}°)`;
     } catch (e) {
         console.error("Location fetch failed", e);
         locationEl.innerText = "Location Error";
     }
+    resolve();
 }
 
 // Fetch Celestial Data
