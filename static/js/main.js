@@ -37,6 +37,15 @@ async function init() {
     planetSelector.addEventListener('change', focusOnPlanet);
     window.addEventListener('resize', onWindowResize);
 
+    // Mobile panel toggle
+    const controlsHeader = document.getElementById('controls-header');
+    const controlsPanel = document.getElementById('controls-panel');
+    controlsHeader.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+            controlsPanel.classList.toggle('open');
+        }
+    });
+
     animate();
 }
 
@@ -389,7 +398,9 @@ function focusOnPlanet() {
 }
 
 function updateUI(sel) {
+    const planetData = document.getElementById('planet-data');
     if (sel === "All" || !celestialBodies[sel]) {
+        planetData.style.display = 'none';
         dataAltEl.innerText = "--";
         dataAzEl.innerText = "--";
         dataDistEl.innerText = "--";
@@ -398,6 +409,7 @@ function updateUI(sel) {
         return;
     }
 
+    planetData.style.display = 'flex'; // Use flex as defined in mobile CSS or block
     const b = celestialBodies[sel];
     dataAltEl.innerText = b.altitude.toFixed(2);
     dataAzEl.innerText = b.azimuth.toFixed(2);

@@ -104,10 +104,23 @@ h1 {
     width: 300px;
 }
 
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+}
+
 .controls-panel h2 {
     font-size: 1.25rem;
-    margin-bottom: 16px;
+    margin: 0;
     font-weight: 600;
+}
+
+.toggle-icon {
+    display: none;
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
 }
 
 select {
@@ -232,9 +245,30 @@ select option {
         /* Slightly more opaque on mobile for readability */
     }
 
+    .panel-header {
+        cursor: pointer;
+        padding-bottom: 5px;
+    }
+
+    .toggle-icon {
+        display: block;
+    }
+
+    #controls-content {
+        display: none;
+        margin-top: 15px;
+    }
+
+    .controls-panel.open #controls-content {
+        display: block;
+    }
+
+    .controls-panel.open .toggle-icon {
+        transform: rotate(180deg);
+    }
+
     .controls-panel h2 {
         font-size: 1.1rem;
-        margin-bottom: 12px;
     }
 
     select {
