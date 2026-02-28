@@ -21,7 +21,7 @@ body {
     color: var(--text-primary);
     overflow: hidden;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
 }
 
 #canvas-container {
@@ -76,6 +76,7 @@ h1 {
     margin: 0;
     background: linear-gradient(135deg, #fff, var(--accent));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     letter-spacing: 0.5px;
 }
@@ -215,6 +216,28 @@ select option {
     color: var(--hid-color) !important;
 }
 
+/* --- Laptop / Small Desktop Adjustments --- */
+@media (max-width: 1366px) {
+    h1 {
+        font-size: 1.4rem;
+    }
+
+    .controls-panel {
+        width: 280px;
+        padding: 16px;
+    }
+
+    select {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+
+    #planet-data p {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+}
+
 /* --- Mobile Optimization --- */
 @media (max-width: 768px) {
     .header-panel {
@@ -313,5 +336,49 @@ select option {
     .legend p {
         margin: 0;
         font-size: 0.8rem;
+    }
+}
+
+/* --- Mobile Landscape Optimization --- */
+@media (max-height: 500px) and (orientation: landscape) {
+    .header-panel {
+        flex-direction: row;
+        margin: 10px;
+        padding: 10px 15px;
+    }
+
+    h1 {
+        font-size: 1.2rem;
+    }
+
+    #time-display {
+        display: none;
+        /* Hide time on very short screens to save space */
+    }
+
+    .controls-panel {
+        top: 80px;
+        bottom: auto;
+        right: 10px;
+        width: 260px;
+        padding: 12px;
+    }
+
+    #controls-content {
+        max-height: 55vh;
+        overflow-y: auto;
+    }
+
+    select {
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+    .legend {
+        bottom: 10px;
+        left: 10px;
+        padding: 5px 10px;
+        flex-direction: column;
+        gap: 5px;
     }
 }

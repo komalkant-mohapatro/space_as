@@ -493,6 +493,12 @@ function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // Ensure mobile panel state is cleaned up when resizing back to desktop
+    if (window.innerWidth > 768) {
+        const panel = document.getElementById('controls-panel');
+        if (panel) panel.classList.remove('open');
+    }
 }
 
 function animate() {
